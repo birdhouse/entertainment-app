@@ -34,11 +34,11 @@ export const registerUser = async (req, res) => {
     const accessToken = generateAccessToken(user);
 
     const refreshToken = generateRefreshToken(user);
-
-    console.log("refreshAccessToken", refreshToken);
+    console.log("refresh-Access-Token - register user", refreshToken);
 
     // Hash refresh token before storing
     const hashedRefresh = await hashToken(refreshToken);
+    console.log("hashed-refresh-token - register user", hashedRefresh);
 
     user.refreshTokens.push({
       token: hashedRefresh,
@@ -51,9 +51,8 @@ export const registerUser = async (req, res) => {
     // Send refresh token in HttpOnly cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === false,
-      sameSite: "None",
-
+      secure: false,
+      sameSite: "Strict",
       path: "/api/auth/refresh",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -91,9 +90,9 @@ export const loginUser = async (req, res) => {
     // Send refresh token in secure cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === false,
-      sameSite: "None",
-      path: "/api/auth/refresh",
+      secure: false, // true only on HTTPS
+      sameSite: "Strict",
+      path: "/", // send to all routes
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -108,7 +107,7 @@ export const loginUser = async (req, res) => {
 
 export const refreshAccessToken = async (req, res) => {
   const refreshToken = req.cookies?.refreshToken;
-  console.log(refreshToken);
+  console.log("refresh-Access-Token - refresh access", refreshToken);
   if (!refreshToken) return res.sendStatus(401);
 
   try {
