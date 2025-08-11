@@ -10,8 +10,14 @@ const RefreshTokenSchema = new mongoose.Schema({
 });
 
 const MovieBookmarkSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  movieId: { type: String, required: true },
+  tmdb_id: { type: Number, required: true }, // Unique ID from TMDB
+  poster_path: { type: String, required: true },
+  release_date: { type: String }, // format: "YYYY-MM-DD"
+  first_air_date: { type: String }, // format: "YYYY-MM-DD"
+  media_type: { type: String, enum: ["movie", "tv"], required: true },
+  adult: { type: Boolean, default: false },
+  original_title: { type: String },
+  original_name: { type: String },
 });
 
 const userSchema = new mongoose.Schema(

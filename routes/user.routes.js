@@ -4,9 +4,9 @@ import {
   getUserById,
   updateUser,
   getBookmarks,
-  replaceUserBookmarks,
   deleteUser,
   getMe,
+  toggleBookmark,
 } from "../controllers/user.controller.js";
 
 import { protect } from "../middleware/authMiddleware.js";
@@ -21,12 +21,12 @@ router.get("/me", protect, getMe);
 
 router.get("/bookmark", protect, getBookmarks);
 
-router.put("/bookmarks", protect, replaceUserBookmarks);
-
-// not needed
-router.get("/:id", getUserById);
+router.put("/bookmarks", protect, toggleBookmark);
 
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
+
+// not needed
+router.get("/:id", getUserById);
 
 export default router;
