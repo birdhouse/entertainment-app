@@ -53,7 +53,7 @@ export const registerUser = async (req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: "Strict",
-      path: "/api/auth/refresh",
+      path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -148,6 +148,33 @@ export const logoutUser = async (req, res) => {
     // token invalid → ignore
   }
 
-  res.clearCookie("refreshToken", { path: "/api/auth/refresh" });
+  res.clearCookie("refreshToken", { path: "/" });
+  res.sendStatus(204);
+};
+
+export const logoutAll = async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(204);
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const user = await User.findById(decoded.id);
+    if (user) {
+      // Clear all stored refresh tokens
+      user.refreshTokens = [];
+      await user.save();
+    }
+  } catch (err) {
+    // token invalid → ignore
+  }
+
+  // Clear cookie
+  res.clearCookie("refreshToken", {
+    path: "/",
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+  });
+
   res.sendStatus(204);
 };
