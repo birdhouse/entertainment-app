@@ -1,6 +1,6 @@
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
-
+import validator from "validator";
 import bcrypt from "bcryptjs";
 
 const hashToken = async (token) => {
@@ -23,8 +23,73 @@ const generateRefreshToken = (user) => {
   });
 };
 
+// export const registerUser = async (req, res) => {
+//   const { name, email, password } = req.body;
+//   try {
+//     const exists = await User.findOne({ email });
+//     if (exists) return res.status(400).json({ message: "Email already in use" });
+
+//     const user = await User.create({ name, email, password });
+
+//     const accessToken = generateAccessToken(user);
+
+//     const refreshToken = generateRefreshToken(user);
+//     console.log("refresh-Access-Token - register user", refreshToken);
+
+//     // Hash refresh token before storing
+//     const hashedRefresh = await hashToken(refreshToken);
+//     console.log("hashed-refresh-token - register user", hashedRefresh);
+
+//     user.refreshTokens.push({
+//       token: hashedRefresh,
+//       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+//       userAgent: req.headers["user-agent"],
+//       ip: req.ip,
+//     });
+//     await user.save();
+
+//     // Send refresh token in HttpOnly cookie
+//     res.cookie("refreshToken", refreshToken, {
+//       httpOnly: true,
+//       secure: false,
+//       sameSite: "Strict",
+//       path: "/",
+//       maxAge: 7 * 24 * 60 * 60 * 1000,
+//     });
+
+//     res.status(201).json({
+//       accessToken,
+//       user: { id: user._id, name: user.name, email: user.email },
+//     });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
+
+  // ✅ Basic server-side validation
+  if (!name || !email || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  // Email check
+  if (!validator.isEmail(email)) {
+    return res.status(400).json({ message: "Invalid email format" });
+  }
+
+  // Password check (min 8 chars, at least 1 letter, 1 number)
+  const isLongEnough = password.length >= 8;
+  const hasLetter = /[A-Za-z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  if (!isLongEnough || !hasLetter || !hasNumber) {
+    return res.status(400).json({
+      message:
+        "Password must be at least 8 characters long and contain at least one letter and one number",
+    });
+  }
+
   try {
     const exists = await User.findOne({ email });
     if (exists) return res.status(400).json({ message: "Email already in use" });
@@ -32,13 +97,10 @@ export const registerUser = async (req, res) => {
     const user = await User.create({ name, email, password });
 
     const accessToken = generateAccessToken(user);
-
     const refreshToken = generateRefreshToken(user);
-    console.log("refresh-Access-Token - register user", refreshToken);
 
     // Hash refresh token before storing
     const hashedRefresh = await hashToken(refreshToken);
-    console.log("hashed-refresh-token - register user", hashedRefresh);
 
     user.refreshTokens.push({
       token: hashedRefresh,
@@ -51,7 +113,7 @@ export const registerUser = async (req, res) => {
     // Send refresh token in HttpOnly cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false,
+      secure: false, // set to true in production with HTTPS
       sameSite: "Strict",
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
