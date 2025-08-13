@@ -18,6 +18,7 @@ const MovieBookmarkSchema = new mongoose.Schema({
   adult: { type: Boolean, default: false },
   original_title: { type: String },
   original_name: { type: String },
+  isBookmarked: { type: Boolean },
 });
 
 const userSchema = new mongoose.Schema(
