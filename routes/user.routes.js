@@ -19,7 +19,7 @@ router.get("/", getUsers);
 // not needed
 router.get("/me", protect, getMe);
 
-router.get("/bookmark", protect, getBookmarks);
+router.get("/bookmarks", protect, getBookmarks);
 
 router.put("/bookmarks", protect, toggleBookmark);
 
