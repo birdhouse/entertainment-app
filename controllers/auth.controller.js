@@ -23,49 +23,6 @@ const generateRefreshToken = (user) => {
   });
 };
 
-// export const registerUser = async (req, res) => {
-//   const { name, email, password } = req.body;
-//   try {
-//     const exists = await User.findOne({ email });
-//     if (exists) return res.status(400).json({ message: "Email already in use" });
-
-//     const user = await User.create({ name, email, password });
-
-//     const accessToken = generateAccessToken(user);
-
-//     const refreshToken = generateRefreshToken(user);
-//     console.log("refresh-Access-Token - register user", refreshToken);
-
-//     // Hash refresh token before storing
-//     const hashedRefresh = await hashToken(refreshToken);
-//     console.log("hashed-refresh-token - register user", hashedRefresh);
-
-//     user.refreshTokens.push({
-//       token: hashedRefresh,
-//       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-//       userAgent: req.headers["user-agent"],
-//       ip: req.ip,
-//     });
-//     await user.save();
-
-//     // Send refresh token in HttpOnly cookie
-//     res.cookie("refreshToken", refreshToken, {
-//       httpOnly: true,
-//       secure: false,
-//       sameSite: "Strict",
-//       path: "/",
-//       maxAge: 7 * 24 * 60 * 60 * 1000,
-//     });
-
-//     res.status(201).json({
-//       accessToken,
-//       user: { id: user._id, name: user.name, email: user.email },
-//     });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
