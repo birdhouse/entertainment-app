@@ -3,9 +3,10 @@ import { User } from "../models/user.model.js";
 // Add bookmark
 export async function addBookmark(userId, bookmarkData) {
   try {
+    const updatedBookmark = { ...bookmarkData, isBookmarked: true };
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { $addToSet: { movieBookmarks: bookmarkData } }, // tmdb_id prevents duplicates
+      { $addToSet: { movieBookmarks: updatedBookmark } }, // tmdb_id prevents duplicates
       { new: true }
     );
     console.log("Bookmark added:", updatedUser.movieBookmarks);
