@@ -78,7 +78,6 @@ export const registerUser = async (req, res) => {
 
     res.status(201).json({
       accessToken,
-      user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -117,7 +116,6 @@ export const loginUser = async (req, res) => {
 
     res.json({
       accessToken,
-      user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -126,7 +124,7 @@ export const loginUser = async (req, res) => {
 
 export const refreshAccessToken = async (req, res) => {
   const refreshToken = req.cookies?.refreshToken;
-  console.log("refresh-Access-Token - refresh access", refreshToken);
+
   if (!refreshToken) return res.sendStatus(401);
 
   try {

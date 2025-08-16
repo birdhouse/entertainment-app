@@ -5,7 +5,6 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// not needed
 router.get("/me", protect, getMe);
 
 router.get("/bookmarks", protect, getBookmarks);

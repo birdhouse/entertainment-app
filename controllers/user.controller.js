@@ -10,8 +10,8 @@ export const getBookmarks = async (req, res) => {
 
 export async function toggleBookmark(req, res) {
   try {
-    const userId = req.user._id; // from protect middleware
-    const bookmarkData = req.body; // only bookmark info is sent in request
+    const userId = req.user._id;
+    const bookmarkData = req.body;
     const { tmdb_id } = bookmarkData;
 
     if (!tmdb_id) {
@@ -35,7 +35,6 @@ export async function toggleBookmark(req, res) {
       movieBookmarks: updatedUser.movieBookmarks,
     });
   } catch (err) {
-    console.log("Error toggling bookmark:", err);
     res.status(500).json({ error: "Server error" });
   }
 }

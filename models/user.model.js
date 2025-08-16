@@ -10,7 +10,7 @@ const RefreshTokenSchema = new mongoose.Schema({
 });
 
 const MovieBookmarkSchema = new mongoose.Schema({
-  tmdb_id: { type: Number, required: true }, // Unique ID from TMDB
+  tmdb_id: { type: Number, required: true },
   poster_path: { type: String, required: true },
   release_date: { type: String }, // format: "YYYY-MM-DD"
   first_air_date: { type: String }, // format: "YYYY-MM-DD"
