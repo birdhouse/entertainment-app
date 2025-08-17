@@ -11,7 +11,7 @@ app.use(express.json());
 // CORS configuration
 app.use(
   cors({
-    origin: "entertainment-app-fe.netlify.app",
+    origin: "https://entertainment-app-fe.netlify.app",
     credentials: true,
   })
 );
