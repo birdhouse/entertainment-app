@@ -156,9 +156,12 @@ export const logoutUser = async (req, res) => {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     const user = await User.findById(decoded.id);
     if (user) {
-      user.refreshTokens = await Promise.all(
-        user.refreshTokens.filter(async (rt) => !(await compareToken(refreshToken, rt.token)))
-      );
+      const newTokens = [];
+      for (const rt of user.refreshTokens) {
+        const match = await compareToken(refreshToken, rt.token);
+        if (!match) newTokens.push(rt);
+      }
+      user.refreshTokens = newTokens;
       await user.save();
     }
   } catch (err) {
