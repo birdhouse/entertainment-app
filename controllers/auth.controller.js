@@ -70,8 +70,8 @@ export const registerUser = async (req, res) => {
     // Send refresh token in HttpOnly cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false, // set to true in production with HTTPS
-      sameSite: "Strict",
+      secure: true, // set to true in production with HTTPS
+      sameSite: "None",
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -108,8 +108,8 @@ export const loginUser = async (req, res) => {
     // Send refresh token in secure cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false, // true only on HTTPS
-      sameSite: "Strict",
+      secure: true, // set to true in production with HTTPS
+      sameSite: "None",
       path: "/", // send to all routes
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
