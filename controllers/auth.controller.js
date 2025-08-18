@@ -165,7 +165,13 @@ export const logoutUser = async (req, res) => {
     // token invalid → ignore
   }
 
-  res.clearCookie("refreshToken", { path: "/" });
+  // Clear cookie
+  res.clearCookie("refreshToken", {
+    path: "/",
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+  });
   res.sendStatus(204);
 };
 
